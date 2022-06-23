@@ -51,5 +51,10 @@ class SettingsActivity : AppCompatActivity() {
 
         }
 
+        binding.llContact.setOnClickListener {
+
+            startActivity(Intent(this, HelpActivity::class.java))
+
+        }
     }
 }

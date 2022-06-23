@@ -105,4 +105,64 @@ object NotiHelper {
             }
         })
     }
+
+    fun sendNotificationToMulti(
+        context: Context,
+        receiverTokens: ArrayList<Users>,
+        title: String,
+        msgBody: String,
+        msgType: String,
+        hisId: String,
+        myId: String
+    ) {
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task: Task<InstanceIdResult?> ->
+            if (task.isSuccessful && task.result != null) {
+                val myToken = task.result!!.token
+                initiateNotificationToMulti(
+                    context,
+                    receiverTokens,
+                    myToken,
+                    title,
+                    msgBody,
+                    msgType,
+                    hisId,
+                    myId
+                )
+            }
+        }
+    }
+
+    private fun initiateNotificationToMulti(
+        context: Context,
+        receiverTokens: ArrayList<Users>,
+        senderToken: String,
+        title: String,
+        msgBody: String,
+        msgType: String,
+        hisId: String,
+        myId: String
+    ) {
+        try {
+            val token = JSONArray()
+            if (receiverTokens.size > 0) {
+
+                for (i in receiverTokens) {
+                    token.put(i.fcm)
+                }
+            }
+            val body = JSONObject()
+            val data = JSONObject()
+            data.put(Constants.REMOTE_MSG_TYPE, msgType)
+            data.put(Constants.REMOTE_MSG_INVITER_TOKEN, senderToken)
+            data.put(Constants.SEND_ID, myId)
+            data.put(Constants.KEY_TITLE, title)
+            data.put(Constants.KEY_BODY, msgBody)
+            body.put(Constants.REMOTE_MSG_DATA, data)
+            body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, token)
+
+            sendRemoteMessage(context, body.toString())
+        } catch (e: Exception) {
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
 }

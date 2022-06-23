@@ -36,5 +36,6 @@ object FireRef {
 
     var CHATS = myRef.child(Constants.KEY_REF_CHATS)
     var NOTIFICATIONS_REF: CollectionReference = fireDB.collection(Constants.NOTIFICATIONS)
-
+    var HELP_REF: CollectionReference = fireDB.collection(Constants.HELP)
+    var ADMIN_REF: CollectionReference = fireDB.collection(Constants.ADMIN)
 }

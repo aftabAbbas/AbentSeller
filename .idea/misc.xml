@@ -21,6 +21,7 @@
         <entry key="app/src/main/res/drawable/et_bg2.xml" value="0.2245" />
         <entry key="app/src/main/res/drawable/et_bg_2.xml" value="0.225" />
         <entry key="app/src/main/res/drawable/et_bg_sigin.xml" value="0.2985" />
+        <entry key="app/src/main/res/drawable/et_bg_stroke.xml" value="0.2035" />
         <entry key="app/src/main/res/drawable/et_search_bg.xml" value="0.225" />
         <entry key="app/src/main/res/drawable/fab_bg.xml" value="0.225" />
         <entry key="app/src/main/res/drawable/ic_add_circle.xml" value="0.2245" />
@@ -37,6 +38,7 @@
         <entry key="app/src/main/res/drawable/ic_chat.xml" value="0.225" />
         <entry key="app/src/main/res/drawable/ic_close.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_close_button.xml" value="0.187" />
+        <entry key="app/src/main/res/drawable/ic_contact_support.xml" value="0.2035" />
         <entry key="app/src/main/res/drawable/ic_current_location.xml" value="0.2245" />
         <entry key="app/src/main/res/drawable/ic_docx.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_download.xml" value="0.2495" />
@@ -96,6 +98,7 @@
         <entry key="app/src/main/res/layout/activity_edit_profile.xml" value="0.51640625" />
         <entry key="app/src/main/res/layout/activity_email_verification.xml" value="0.51640625" />
         <entry key="app/src/main/res/layout/activity_forget_password.xml" value="0.51640625" />
+        <entry key="app/src/main/res/layout/activity_help.xml" value="0.51640625" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="1.176688612144412" />
         <entry key="app/src/main/res/layout/activity_location_picker.xml" value="0.51640625" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25796051025390626" />

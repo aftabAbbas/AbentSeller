@@ -3,6 +3,8 @@ package com.aftab.abentseller.Utils
 object Constants {
 
 
+    const val ADMIN = "admin"
+    const val HELP = "help"
     const val OTHERS = "Others"
     const val FEMAlE = "Female"
     const val MAlE = "Male"

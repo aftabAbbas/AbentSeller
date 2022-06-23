@@ -37,6 +37,9 @@
         android:theme="@style/Theme.AbentSeller"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".Activities.Main.HelpActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.Main.ProductDetailActivity"
             android:exported="false" />
         <activity

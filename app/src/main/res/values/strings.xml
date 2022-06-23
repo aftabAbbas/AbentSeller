@@ -217,6 +217,14 @@
     <string name="order_picked">Order Picked</string>
     <string name="your_parcel_has">Your Parcel has been picked up by </string>
     <string name="already_assigned">Already Assigned</string>
+    <string name="help">Help</string>
+    <string name="your_name">Your Name</string>
+    <string name="your_email">Your Email</string>
+    <string name="problem">Problem</string>
+    <string name="we_are_available_on">We are available on</string>
+    <string name="help_request">Help request successfully submitted to admins</string>
+    <string name="needs_your1"> needs help from you. Check his problems.</string>
+    <string name="needs_your2"> needs help from you. Check her problems.</string>
 
 
 </resources>

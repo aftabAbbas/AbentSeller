@@ -177,7 +177,6 @@
                     app:drawableTint="@color/black" />
 
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/ll_privacy_policy"
                 android:layout_width="match_parent"
@@ -220,6 +219,48 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/circular_ripple"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    app:cardBackgroundColor="@color/gray_30"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/ic_contact_support"
+                        app:tint="@color/black" />
+
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="@string/contact"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_arrow_right"
+                    app:drawableTint="@color/black" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_about"

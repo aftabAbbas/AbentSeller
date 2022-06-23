@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "834850205281",
+    "project_id": "abent-3b16a",
+    "storage_bucket": "abent-3b16a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834850205281:android:8b69686cc65fa5ade68420",
+        "android_client_info": {
+          "package_name": "com.aftab.abentseller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "834850205281-d5pt97pl5ei4m3e3pc77gg2qmbq6l4a2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aftab.abentseller",
+            "certificate_hash": "9b4d6ce2a02e1a0f358364be3f7758e89d46efa8"
+          }
+        },
+        {
+          "client_id": "834850205281-gm144hlaa8m08fhon54thnbs93f5ug7k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvlEnDMmM6KkINoccyOsHhHAIIkVmZYSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "834850205281-gm144hlaa8m08fhon54thnbs93f5ug7k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

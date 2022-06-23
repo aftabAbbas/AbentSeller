@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <application
+        android:name=".Utils.MyApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AbentSeller"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".Activities.Main.ProductDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Main.LocationPickerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Main.PlayVideoActivity"
+            android:exported="false"
+            android:theme="@style/blackStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.SeeImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Main.ChatProductListActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.ScanQRCodeActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.NotificationsActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Settings.AboutActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Settings.ChangePasswordActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Settings.ChangeAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Settings.TermsAndConditionsActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Settings.ChangeLanguageActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Settings.NotificationSettingsActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.EditProfileActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.AddNewProductActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.SelectProductCategoryActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.UserChatActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.Main.CanceledOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Main.DeliveredOrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Main.ActiveOrderDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.StartUp.ChooseLocationActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
+
+        <activity
+            android:name=".Activities.StartUp.AllowLocationActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.StartUp.CreateAccountActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.StartUp.EmailVerificationActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.StartUp.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.StartUp.ForgetPasswordActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.StartUp.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Main.HomeActivity"
+            android:exported="false"
+            android:theme="@style/whiteStatusBarTheme" />
+        <activity
+            android:name=".Activities.StartUp.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".Notifications.Services.MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+    </application>
+
+</manifest>

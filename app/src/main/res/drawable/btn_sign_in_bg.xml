@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:color="#f0f0f0">
+
+    <item android:drawable="@drawable/btn_bg_selected" android:state_pressed="false" />
+
+    <item android:drawable="@drawable/btn_bg_unselected" />
+
+</selector>

@@ -1,0 +1,25 @@
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/pb_loading"
+    android:duration="1"
+    android:fromDegrees="0"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:toDegrees="1080" /> <!--1080 is 3 loops instead of 1 in same amt of time--><!--\
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+<rotate
+    android:duration="100"
+    android:fromDegrees="-3"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:repeatCount="9999"
+    android:repeatMode="reverse"
+    android:interpolator="@android:anim/linear_interpolator"
+    android:toDegrees="3" />
+<translate
+    android:fromXDelta="-3"
+    android:toXDelta="3"
+    android:repeatCount="9999"
+    android:repeatMode="reverse"
+    android:interpolator="@android:anim/linear_interpolator"
+    android:duration="100" />
+</set>-->

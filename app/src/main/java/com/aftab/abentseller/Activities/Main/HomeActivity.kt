@@ -136,7 +136,7 @@ class HomeActivity : AppCompatActivity() {
 
         binding.ivNotification.setOnClickListener {
 
-            NotiHelper.sendNotification(
+           /* NotiHelper.sendNotification(
                 this,
                 "APA91bEnlJBZZfQkk31zoC83INBvN8K2kkA8Vj58vY6ZaxBB5wbL4GZfPnLDJKGtrgPeDKpHxBkDo9zkGIkAtAazNN0gTDpy6maoHjXz-0QOKjZWpp8R3NxutDS3O0avZwmwekqg6-Ga",
                 resources.getString(R.string.order_picked),
@@ -144,8 +144,8 @@ class HomeActivity : AppCompatActivity() {
                 Constants.REMOTE_MSG_ORDER,
                 "customerData.uid",
                 usersData.uid
-            )
-           // startActivity(Intent(this, NotificationsActivity::class.java))
+            )*/
+           startActivity(Intent(this, NotificationsActivity::class.java))
 
         }
 

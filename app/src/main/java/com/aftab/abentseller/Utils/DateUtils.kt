@@ -24,6 +24,13 @@ object DateUtils {
         return df.format(c)
     }
 
+    fun getCurrentDate(format:String): String? {
+        val c = Calendar.getInstance().time
+        val df = SimpleDateFormat(format, Locale.US)
+        df.timeZone = TimeZone.getDefault()
+        return df.format(c)
+    }
+
     fun getTime(date: String?): String? {
         val originalFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss Z", Locale.ENGLISH)
         @SuppressLint("SimpleDateFormat") val targetFormat: DateFormat = SimpleDateFormat("hh:mm a")

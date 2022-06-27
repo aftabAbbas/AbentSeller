@@ -15,9 +15,23 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.aftab.abentseller.Activities.Main.HomeActivity
+import com.aftab.abentseller.Model.Users
 import com.aftab.abentseller.R
 import com.aftab.abentseller.Utils.*
 import com.aftab.abentseller.databinding.ActivitySignUpBinding
+import com.facebook.AccessTokenTracker
+import com.facebook.CallbackManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.DocumentSnapshot
+import java.util.*
 
 @SuppressLint("ClickableViewAccessibility")
 @Suppress("deprecation")
@@ -32,10 +46,21 @@ class SignUpActivity : AppCompatActivity() {
     private var isCPasswordClicked: Boolean = true
     private lateinit var fName: String
     private lateinit var lName: String
+    private lateinit var uid: String
+    private lateinit var name: String
+    private lateinit var dp: String
     private lateinit var email: String
     private lateinit var phone: String
     private lateinit var password: String
     private lateinit var cPassword: String
+    private lateinit var planDate: String
+
+
+    private var mGoogleSignInClient: GoogleSignInClient? = null
+    private var gso: GoogleSignInOptions? = null
+    private var accessTokenTracker: AccessTokenTracker? = null
+    private var callbackManager: CallbackManager? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -320,6 +345,184 @@ class SignUpActivity : AppCompatActivity() {
         val intent = Intent(this, EmailVerificationActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
+
+    }
+
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.RC_G_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                loadingDialog.dismiss()
+                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // for facebook
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FireRef.mAuth.signInWithCredential(credential).addOnCompleteListener(
+            this
+        ) { task: Task<AuthResult?> ->
+            if (task.isSuccessful) {
+                val user: FirebaseUser = FireRef.mAuth.currentUser!!
+                uid = user.uid
+                name = user.displayName.toString()
+                email = user.email!!
+                dp = Objects.requireNonNull(user.photoUrl)
+                    .toString()
+                getDataFromFS(Constants.GOOGLE)
+            } else {
+                Functions.showSnackBar(
+                    this,
+                    task.exception?.message
+                )
+                loadingDialog.dismiss()
+            }
+        }.addOnFailureListener { e: Exception ->
+            loadingDialog.dismiss()
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getDataFromFS(signInBy: String) {
+
+        FireRef.USERS_REF
+            .whereEqualTo(Constants.UID, uid)
+            .get()
+            .addOnCompleteListener {
+
+                if (it.isSuccessful && it.result != null && it.result
+                        .documents.size > 0
+                ) {
+
+                    val documentSnapshot: DocumentSnapshot = it.result.documents[0]
+
+                    val users = documentSnapshot.toObject(Users::class.java)
+
+                    if (users != null) {
+
+                        checkUserType(users)
+                    }
+
+
+                } else {
+
+                    loadingDialog.dismiss()
+                    if (it.exception?.message == null) {
+
+                        //add user to fb
+                        uploadUserDataToFS(signInBy)
+
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "FS Error " + it.exception?.message,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                }
+
+            }
+
+    }
+
+    private fun uploadUserDataToFS(signInBy: String) {
+
+        planDate = System.currentTimeMillis().toString()
+        val dtb = DateUtils.getCurrentDate(DateFormats.dateFormat3)
+
+        val separated = name.split(" ".toRegex()).toTypedArray()
+        fName = separated[0]
+        lName = separated[1]
+
+        val users = Users(
+            uid,
+            fName,
+            lName,
+            email,
+            "",
+            dp,
+            "",
+            Constants.MAlE,
+            dtb!!,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            planDate,
+            Constants.FREE,
+            Constants.SELLER,
+            Constants.ACTIVE,
+            signInBy,
+            "",
+            Constants.ENGLISH,
+            Constants.ONLINE
+        )
+
+        FireRef.USERS_REF.document(uid)
+            .set(users)
+            .addOnCompleteListener {
+
+                saveToSp(users)
+
+            }
+
+
+    }
+
+
+    private fun checkUserType(users: Users) {
+
+        loadingDialog.dismiss()
+
+        if (users.userType == Constants.SELLER) {
+
+            saveToSp(users)
+
+
+        } else {
+
+            FireRef.mAuth.signOut()
+
+            Toast.makeText(
+                this,
+                resources.getString(R.string.please_login_seller),
+                Toast.LENGTH_SHORT
+            ).show()
+
+        }
+
+
+    }
+
+    private fun saveToSp(users: Users) {
+
+        sh.putBoolean(Constants.IS_LOGGED_IN, true)
+        sh.putBoolean(Constants.IS_EMAIL_SENT, false)
+        sh.putBoolean(Constants.IS_ADDED_INFO, true)
+        sh.putBoolean(Constants.ORDER_NOTI, true)
+        sh.putBoolean(Constants.CHAT_NOTI, true)
+        sh.putBoolean(Constants.REVIEW_NOTI, true)
+        sh.putBoolean(Constants.DELIVERY_NOTI, true)
+        sh.saveUsers(users)
+
+
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+
 
     }
 }

@@ -84,6 +84,7 @@ class ActiveOrderFragment : Fragment() {
                         o2.orderDate.compareTo(o1.orderDate)
                     }
 
+                    productList.clear()
                     counter = 0
                     getProducts()
 

@@ -15,14 +15,30 @@ import com.aftab.abentseller.Model.Users
 import com.aftab.abentseller.R
 import com.aftab.abentseller.Utils.*
 import com.aftab.abentseller.databinding.ActivityLoginBinding
+import com.facebook.*
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.DocumentSnapshot
+import java.util.*
 
+@Suppress("deprecation")
 @SuppressLint("ClickableViewAccessibility")
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var sh: SharedPref
     private lateinit var uid: String
+    private lateinit var name: String
+    private lateinit var dp: String
     private lateinit var email: String
     private lateinit var password: String
     private var isValid: Boolean = false
@@ -30,12 +46,19 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var loadingDialog: LoadingDialog
 
+    private var mGoogleSignInClient: GoogleSignInClient? = null
+    private var gso: GoogleSignInOptions? = null
+    private var accessTokenTracker: AccessTokenTracker? = null
+    private var callbackManager: CallbackManager? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
         clickListeners()
+        faceBookClickListener()
     }
 
 
@@ -43,6 +66,16 @@ class LoginActivity : AppCompatActivity() {
 
         sh = SharedPref(this)
         loadingDialog = LoadingDialog(this, "Loading")
+
+
+        gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso!!)
+
+        GoogleSignIn.getClient(
+            this,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        ).signOut()
 
     }
 
@@ -108,6 +141,19 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
+        binding.btnGoogleSignIn.setOnClickListener {
+
+            loginWithGoogle()
+
+
+        }
+
+    }
+
+    private fun loginWithGoogle() {
+        val signInIntent = mGoogleSignInClient!!.signInIntent
+        startActivityForResult(signInIntent, Constants.RC_G_SIGN_IN)
+        loadingDialog.show()
     }
 
     private fun validateFields(): Boolean {
@@ -148,7 +194,7 @@ class LoginActivity : AppCompatActivity() {
                 if (it.isSuccessful) {
                     uid = FireRef.mAuth.currentUser?.uid.toString()
 
-                    getDataFromFS()
+                    getDataFromFS(Constants.EMAIL)
 
                 } else {
 
@@ -160,7 +206,7 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun getDataFromFS() {
+    private fun getDataFromFS(loginType: String) {
 
         FireRef.USERS_REF
             .whereEqualTo(Constants.UID, uid)
@@ -183,9 +229,23 @@ class LoginActivity : AppCompatActivity() {
                 } else {
 
                     loadingDialog.dismiss()
-                    Toast.makeText(this, "FS Error " + it.exception?.message, Toast.LENGTH_SHORT)
-                        .show()
+                    if (it.exception?.message == null) {
 
+                        Toast.makeText(
+                            this,
+                            resources.getString(R.string.no_user_found),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "FS Error " + it.exception?.message,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
                 }
 
             }
@@ -250,6 +310,119 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
 
 
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.RC_G_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                loadingDialog.dismiss()
+                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // for facebook
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FireRef.mAuth.signInWithCredential(credential).addOnCompleteListener(
+            this
+        ) { task: Task<AuthResult?> ->
+            if (task.isSuccessful) {
+                val user: FirebaseUser = FireRef.mAuth.currentUser!!
+                uid = user.uid
+                name = user.displayName.toString()
+                email = user.email!!
+                dp = Objects.requireNonNull(user.photoUrl)
+                    .toString()
+                getDataFromFS(Constants.GOOGLE)
+            } else {
+                Functions.showSnackBar(
+                    this,
+                    task.exception?.message
+                )
+                loadingDialog.dismiss()
+            }
+        }.addOnFailureListener { e: Exception ->
+            loadingDialog.dismiss()
+            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun faceBookClickListener() {
+        binding.loginButton?.setReadPermissions("email", "public_profile")
+        callbackManager = CallbackManager.Factory.create()
+        binding.loginButton.registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    loadingDialog.show()
+                    handlerFacebookToken(loginResult.accessToken)
+                }
+
+                override fun onCancel() {
+                    Toast.makeText(this@LoginActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onError(error: FacebookException) {
+                    Toast.makeText(this@LoginActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                }
+            })
+        accessTokenTracker = object : AccessTokenTracker() {
+            override fun onCurrentAccessTokenChanged(
+                oldAccessToken: AccessToken,
+                currentAccessToken: AccessToken
+            ) {
+                if (currentAccessToken == null) {
+                    FireRef.mAuth.signOut()
+                }
+            }
+        }
+        LoginManager.getInstance().retrieveLoginStatus(this, object : LoginStatusCallback {
+            override fun onCompleted(accessToken: AccessToken) {
+                // User was previously logged in, can log them in directly here.
+                // If this callback is called, a popup notification appears that says
+                // "Logged in as <User Name>"
+            }
+
+            override fun onFailure() {
+                // No access token could be retrieved for the user
+            }
+
+            override fun onError(exception: java.lang.Exception) {
+                // An error occurred
+            }
+        })
+    }
+
+    private fun handlerFacebookToken(token: AccessToken) {
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        FireRef.mAuth.signInWithCredential(credential)
+            .addOnCompleteListener { task: Task<AuthResult?> ->
+                if (task.isSuccessful) {
+                    val user: FirebaseUser = FireRef.mAuth.currentUser!!
+                    uid = user.uid
+                    name = user.displayName!!
+                    email = user.email!!
+                    dp =
+                        Objects.requireNonNull(user.photoUrl)
+                            .toString()
+                    getDataFromFS(Constants.FACEBOOK)
+                } else {
+                    loadingDialog.dismiss()
+                }
+            }
+            .addOnFailureListener { e: java.lang.Exception ->
+                Toast.makeText(this, "Failure " + e.message, Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+            }
     }
 
 }

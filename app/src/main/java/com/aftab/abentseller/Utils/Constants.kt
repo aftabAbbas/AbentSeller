@@ -3,6 +3,9 @@ package com.aftab.abentseller.Utils
 object Constants {
 
 
+    const val FACEBOOK ="Facebook"
+    const val GOOGLE = "Google"
+    const val RC_G_SIGN_IN = 4
     const val ADMIN = "admin"
     const val HELP = "help"
     const val OTHERS = "Others"

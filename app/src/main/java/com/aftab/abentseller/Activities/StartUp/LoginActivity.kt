@@ -18,6 +18,7 @@ import com.aftab.abentseller.databinding.ActivityLoginBinding
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -50,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
     private var gso: GoogleSignInOptions? = null
     private var accessTokenTracker: AccessTokenTracker? = null
     private var callbackManager: CallbackManager? = null
+    private var loginButton: LoginButton? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
 
         sh = SharedPref(this)
         loadingDialog = LoadingDialog(this, "Loading")
-
+        loginButton = findViewById(R.id.login_button)
 
         gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
@@ -147,6 +149,13 @@ class LoginActivity : AppCompatActivity() {
 
 
         }
+
+        binding.btnFb.setOnClickListener {
+
+            loginButton?.performClick()
+
+        }
+
 
     }
 
@@ -314,6 +323,7 @@ class LoginActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == Constants.RC_G_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -327,7 +337,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // for facebook
-        callbackManager?.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -357,7 +366,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun faceBookClickListener() {
-        binding.loginButton?.setReadPermissions("email", "public_profile")
+        binding.loginButton.setReadPermissions("email", "public_profile")
         callbackManager = CallbackManager.Factory.create()
         binding.loginButton.registerCallback(
             callbackManager,
@@ -377,8 +386,8 @@ class LoginActivity : AppCompatActivity() {
             })
         accessTokenTracker = object : AccessTokenTracker() {
             override fun onCurrentAccessTokenChanged(
-                oldAccessToken: AccessToken,
-                currentAccessToken: AccessToken
+                oldAccessToken: AccessToken?,
+                currentAccessToken: AccessToken?
             ) {
                 if (currentAccessToken == null) {
                     FireRef.mAuth.signOut()

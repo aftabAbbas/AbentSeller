@@ -246,6 +246,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_fb"
                     android:layout_width="0dp"
                     android:layout_height="45dp"
                     android:layout_marginHorizontal="8dp"

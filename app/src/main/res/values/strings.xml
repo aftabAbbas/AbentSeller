@@ -227,7 +227,8 @@
     <string name="no_user_found">No user found</string>
     <string name="needs_your2"> needs help from you. Check her problems.</string>
 
-    <string name="facebook_app_id">462808931967549</string>
-    <string name="fb_login_protocol_scheme">fb462808931967549</string>
+    <string name="facebook_app_id">889215191894981</string>
+    <string name="fb_login_protocol_scheme">fb889215191894981</string>
+    <string name="facebook_client_token">f38d43ecd5fcf10fbb4ccbbcef91fd7d</string>
 
 </resources>

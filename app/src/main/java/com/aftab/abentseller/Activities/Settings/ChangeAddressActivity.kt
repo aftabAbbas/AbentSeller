@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.*
 import android.os.Bundle
+import android.view.View
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -204,18 +206,33 @@ class ChangeAddressActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
             return
         }
 
-        addressLat = usersData.addressLat.toDouble()
-        addressLng = usersData.addressLng.toDouble()
+        val locationButton = (mapFragment.view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(Integer.parseInt("2"))
+        val rlp =  locationButton.layoutParams as RelativeLayout.LayoutParams
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+        rlp.setMargins(0, 0, 30, 100)
 
-        mMap.clear()
+        if (usersData.addressLat != "" && usersData.addressLng != "") {
 
-        val marker = MarkerOptions().position(LatLng(addressLat, addressLng)).title("Your address")
+            addressLat = usersData.addressLat.toDouble()
+            addressLng = usersData.addressLng.toDouble()
 
-        googleMap.addMarker(marker)
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(addressLat, addressLng), 15f)
-        mMap.animateCamera(cameraUpdate)
+            mMap.clear()
+
+            val marker =
+                MarkerOptions().position(LatLng(addressLat, addressLng)).title("Your address")
+
+            googleMap.addMarker(marker)
+            val cameraUpdate =
+                CameraUpdateFactory.newLatLngZoom(LatLng(addressLat, addressLng), 15f)
+            mMap.animateCamera(cameraUpdate)
 
 
+        } else {
+
+            mMap.isMyLocationEnabled = true
+
+        }
         mMap.setOnCameraIdleListener {
             midLatLng = mMap.cameraPosition.target
             if (midLatLng.latitude != 0.0 && midLatLng.longitude != 0.0) {
@@ -237,8 +254,25 @@ class ChangeAddressActivity : AppCompatActivity(), OnMapReadyCallback, LocationL
         }
     }
 
-    override fun onLocationChanged(p0: Location) {
+    override fun onLocationChanged(location: Location) {
+
+        if (usersData.addressLat == "" && usersData.addressLng == "") {
+
+            val latLng = LatLng(location.latitude, location.longitude)
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15f)
+            mMap.animateCamera(cameraUpdate)
+
+        }
+
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
+    }
+
+    override fun onProviderEnabled(provider: String) {}
+    override fun onProviderDisabled(provider: String) {}
+
 
     companion object {
         private const val MIN_TIME: Long = 400

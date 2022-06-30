@@ -121,7 +121,7 @@ dependencies {
     implementation 'gun0912.ted:tedpermission:2.2.3'
 
     // Facebook Login
-    implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
+    implementation 'com.facebook.android:facebook-android-sdk:12.3.0'
 
 
 }

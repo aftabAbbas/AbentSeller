@@ -7,9 +7,10 @@
     tools:context=".Activities.StartUp.SplashActivity">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/logo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/splash_abent"
         android:contentDescription="@string/app_name"
         android:layout_centerInParent="true"/>
 

@@ -9,6 +9,7 @@ import android.text.InputFilter.LengthFilter
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -20,14 +21,17 @@ import com.aftab.abentseller.Model.Users
 import com.aftab.abentseller.R
 import com.aftab.abentseller.Utils.*
 import com.aftab.abentseller.databinding.ActivitySignUpBinding
-import com.facebook.AccessTokenTracker
-import com.facebook.CallbackManager
+import com.facebook.*
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.DocumentSnapshot
@@ -60,6 +64,8 @@ class SignUpActivity : AppCompatActivity() {
     private var gso: GoogleSignInOptions? = null
     private var accessTokenTracker: AccessTokenTracker? = null
     private var callbackManager: CallbackManager? = null
+    private var loginButton: LoginButton? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,12 +75,23 @@ class SignUpActivity : AppCompatActivity() {
         initUI()
         clickListeners()
         addPasswordPatternWatcher()
+        faceBookClickListener()
     }
 
     private fun initUI() {
 
         sh = SharedPref(this)
         loadingDialog = LoadingDialog(this, resources.getString(R.string.loading))
+        loginButton = findViewById(R.id.login_button)
+
+        gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso!!)
+
+        GoogleSignIn.getClient(
+            this,
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        ).signOut()
 
     }
 
@@ -102,6 +119,18 @@ class SignUpActivity : AppCompatActivity() {
         }
 
 
+        binding.btnGoogleSignIn.setOnClickListener {
+
+            loginWithGoogle()
+
+
+        }
+
+        binding.btnFb.setOnClickListener {
+
+            loginButton?.performClick()
+
+        }
 
         binding.etPassword.setOnTouchListener { _: View, event: MotionEvent ->
             val drawableStart = 2
@@ -169,6 +198,12 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 
+    private fun loginWithGoogle() {
+        val signInIntent = mGoogleSignInClient!!.signInIntent
+        startActivityForResult(signInIntent, Constants.RC_G_SIGN_IN)
+        loadingDialog.show()
+    }
+
     private fun addPasswordPatternWatcher() {
 
         binding.etPassword.addTextChangedListener(object : TextWatcher {
@@ -203,7 +238,7 @@ class SignUpActivity : AppCompatActivity() {
                     val shake =
                         AnimationUtils.loadAnimation(this@SignUpActivity, R.anim.shake_layout)
                     binding.etPassword.startAnimation(shake)
-                    Functions.vibrate(this@SignUpActivity,100)
+                    Functions.vibrate(this@SignUpActivity, 100)
                 }
             }
 
@@ -242,7 +277,7 @@ class SignUpActivity : AppCompatActivity() {
                     val shake =
                         AnimationUtils.loadAnimation(this@SignUpActivity, R.anim.shake_layout)
                     binding.etCPassword.startAnimation(shake)
-                    Functions.vibrate(this@SignUpActivity,100)
+                    Functions.vibrate(this@SignUpActivity, 100)
                 }
             }
 
@@ -347,6 +382,8 @@ class SignUpActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
+
+
 
 
     @Deprecated("Deprecated in Java")
@@ -482,7 +519,6 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 
-
     private fun checkUserType(users: Users) {
 
         loadingDialog.dismiss()
@@ -525,4 +561,80 @@ class SignUpActivity : AppCompatActivity() {
 
 
     }
+
+    private fun faceBookClickListener() {
+
+
+        // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        loginButton?.setReadPermissions("email", "public_profile")
+
+        callbackManager = CallbackManager.Factory.create()
+        loginButton?.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult) {
+                loadingDialog.show()
+                handlerFacebookToken(result.accessToken)
+            }
+
+            override fun onCancel() {
+                Toast.makeText(this@SignUpActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onError(error: FacebookException) {
+                Log.d("dada", error.message.toString())
+                Toast.makeText(
+                    this@SignUpActivity,
+                    "Cancelled: " + error.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+        accessTokenTracker = object : AccessTokenTracker() {
+            override fun onCurrentAccessTokenChanged(
+                oldAccessToken: AccessToken?,
+                currentAccessToken: AccessToken?
+            ) {
+
+                FireRef.mAuth.signOut()
+            }
+        }
+        LoginManager.getInstance().retrieveLoginStatus(this, object : LoginStatusCallback {
+            override fun onCompleted(accessToken: AccessToken) {
+                // User was previously logged in, can log them in directly here.
+                // If this callback is called, a popup notification appears that says
+                // "Logged in as <User Name>"
+            }
+
+            override fun onFailure() {
+                // No access token could be retrieved for the user
+            }
+
+            override fun onError(exception: java.lang.Exception) {
+                // An error occurred
+            }
+        })
+    }
+
+    private fun handlerFacebookToken(token: AccessToken) {
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        FireRef.mAuth.signInWithCredential(credential)
+            .addOnCompleteListener { task: Task<AuthResult?> ->
+                if (task.isSuccessful) {
+                    val user: FirebaseUser = FireRef.mAuth.currentUser!!
+                    uid = user.uid
+                    name = user.displayName!!
+                    email = user.email!!
+                    dp =
+                        Objects.requireNonNull(user.photoUrl)
+                            .toString()
+                    getDataFromFS(Constants.FACEBOOK)
+                } else {
+                    loadingDialog.dismiss()
+                }
+            }
+            .addOnFailureListener { e: java.lang.Exception ->
+                Toast.makeText(this, "Failure " + e.message, Toast.LENGTH_SHORT).show()
+                loadingDialog.dismiss()
+            }
+    }
+
 }

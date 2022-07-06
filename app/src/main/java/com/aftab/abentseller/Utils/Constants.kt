@@ -103,8 +103,8 @@ object Constants {
     const val KEY_PREFERENCE_NAME: String = "AbentSeller"
     const val SPLASH_DURATION: Long = 1000
     const val IS_LOGGED_IN = "isLodgedIn"
-    const val FIRST_NAME = "fName"
-    const val LAST_NAME = "lName"
+    const val FIRST_NAME = "fname"
+    const val LAST_NAME = "lname"
     const val EMAIL = "email"
     const val PASSWORD = "password"
     private const val ACCESS_KEY = "sk286292djd926d"

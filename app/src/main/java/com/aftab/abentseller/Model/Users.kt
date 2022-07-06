@@ -6,8 +6,8 @@ import java.io.Serializable
 data class Users(
 
     var uid: String = "",
-    var fName: String = "",
-    var lName: String = "",
+    var fname: String = "",
+    var lname: String = "",
     var email: String = "",
     var phone: String = "",
     var dp: String = "",

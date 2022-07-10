@@ -415,8 +415,8 @@ class HomeActivity : AppCompatActivity() {
         val tvName = headerView.findViewById<TextView>(R.id.tv_name)
         val tvEmail = headerView.findViewById<TextView>(R.id.tv_email)
         val cvUser: CircleImageView = headerView.findViewById(R.id.civ_user)
-        var fName = usersData.fName
-        var lName = usersData.lName
+        var fName = usersData.fname
+        var lName = usersData.lname
         fName = fName.substring(0, 1).toUpperCase(Locale.ROOT) + fName.substring(1).toLowerCase(
             Locale.ROOT
         )

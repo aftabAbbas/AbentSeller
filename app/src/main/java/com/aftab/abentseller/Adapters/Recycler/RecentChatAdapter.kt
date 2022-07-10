@@ -52,8 +52,8 @@ class RecentChatAdapter(var context: Context, private var recentChatList: ArrayL
 
             val users = recentChat.users
 
-            var fName = users.fName
-            var lName = users.lName
+            var fName = users.fname
+            var lName = users.lname
             fName =
                 fName.substring(0, 1).uppercase(Locale.ROOT) + fName.substring(1)
                     .lowercase(

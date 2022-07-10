@@ -165,7 +165,7 @@ class ScanQRCodeActivity : AppCompatActivity() {
                     customerData = documentSnapshot.toObject(Users::class.java)!!
 
                     val msg =
-                        resources.getString(R.string.your_parcel_has) + " " + (deliveryBoyData.fName + " " + deliveryBoyData.fName)
+                        resources.getString(R.string.your_parcel_has) + " " + (deliveryBoyData.fname + " " + deliveryBoyData.lname)
 
                     NotiHelper.sendNotification(
                         this,
@@ -404,7 +404,7 @@ class ScanQRCodeActivity : AppCompatActivity() {
 
         setViewsVisibility(1)
 
-        val name = deliveryBoyData.fName + " " + deliveryBoyData.lName
+        val name = deliveryBoyData.fname + " " + deliveryBoyData.lname
         binding.tvRiderName.text = name
 
         Glide.with(this)

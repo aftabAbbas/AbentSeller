@@ -196,7 +196,7 @@ class EarningsFragment : Fragment() {
 
                     val users = documentSnapshot.toObject(Users::class.java)
 
-                    val name = users?.fName + " " + users?.lName
+                    val name = users?.fname + " " + users?.lname
 
                     tvUserName.text = name
 

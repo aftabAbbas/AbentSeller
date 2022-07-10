@@ -56,8 +56,8 @@ class ProfileFragment : Fragment() {
 
     private fun setData() {
 
-        var fName = usersData.fName
-        var lName = usersData.lName
+        var fName = usersData.fname
+        var lName = usersData.lname
         fName = fName.substring(0, 1).toUpperCase(Locale.ROOT) + fName.substring(1).toLowerCase(
             Locale.ROOT
         )

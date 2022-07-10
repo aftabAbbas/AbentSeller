@@ -98,8 +98,8 @@ class UserChatActivity : AppCompatActivity() {
 
     private fun setUI() {
 
-        fName = receiverData.fName
-        lName = receiverData.lName
+        fName = receiverData.fname
+        lName = receiverData.lname
         fName = fName.substring(0, 1).toUpperCase(Locale.ROOT) + fName.substring(1)
             .toLowerCase(
                 Locale.ROOT
@@ -172,7 +172,7 @@ class UserChatActivity : AppCompatActivity() {
             NotiHelper.sendNotification(
                 this,
                 receiverData.fcm,
-                "${usersData.fName} ${usersData.lName}",
+                "${usersData.fname} ${usersData.lname}",
                 msg,
                 Constants.REMOTE_MSG_CHAT,
                 receiverData.uid,

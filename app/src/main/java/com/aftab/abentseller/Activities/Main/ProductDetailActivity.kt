@@ -130,8 +130,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
                     sellerData = documentSnapshot.toObject(Users::class.java)!!
 
-                    var fName = sellerData.fName
-                    var lName = sellerData.lName
+                    var fName = sellerData.fname
+                    var lName = sellerData.lname
                     fName = fName.substring(0, 1).toUpperCase(Locale.ROOT) + fName.substring(1)
                         .toLowerCase(
                             Locale.ROOT

@@ -272,8 +272,8 @@ class EditProfileActivity : AppCompatActivity() {
 
         val users: Users = usersData
 
-        users.fName = fName
-        users.lName = lName
+        users.fname = fName
+        users.lname = lName
         users.dp = dp
         users.gender = gender
         users.dtb = dtb
@@ -360,8 +360,8 @@ class EditProfileActivity : AppCompatActivity() {
 
         setUI(false)
 
-        binding.etFName.setText(usersData.fName)
-        binding.etLName.setText(usersData.lName)
+        binding.etFName.setText(usersData.fname)
+        binding.etLName.setText(usersData.lname)
         binding.etEmail.setText(usersData.email)
         binding.etDtb.setText(usersData.dtb)
         binding.etCity.setText(usersData.city)

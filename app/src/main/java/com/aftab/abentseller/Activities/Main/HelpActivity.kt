@@ -46,7 +46,7 @@ class HelpActivity : AppCompatActivity() {
 
         users = sh.getUsers()!!
 
-        name = users.fName + " " + users.lName
+        name = users.fname + " " + users.lname
         email = users.email
 
         binding.etName.setText(name)

@@ -175,7 +175,7 @@ class DeliveredOrderActivity : AppCompatActivity() {
 
                     val dp = deliveryBoyData.dp
 
-                    val name = deliveryBoyData.fName + " " + deliveryBoyData.lName
+                    val name = deliveryBoyData.fname + " " + deliveryBoyData.lname
 
                     binding.tvRiderName.text = name
 

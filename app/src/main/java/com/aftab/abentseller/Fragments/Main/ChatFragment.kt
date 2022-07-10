@@ -73,7 +73,7 @@ class ChatFragment : Fragment() {
                     )
                 recentChatAdapter = if (search != "") {
                     for (recentChat in recentChatList) {
-                        val name = "${recentChat.users.fName} ${recentChat.users.lName}"
+                        val name = "${recentChat.users.fname} ${recentChat.users.lname}"
                         if (name.lowercase(Locale.getDefault())
                                 .contains(search)
                         ) {
